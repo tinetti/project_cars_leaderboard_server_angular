@@ -36,3 +36,9 @@ node_modules
 typings
 app/**/*.js
 app/**/*.map
+
+# Test output
+_test-output
+
+# IDE
+.idea
