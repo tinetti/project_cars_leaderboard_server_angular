@@ -25,6 +25,21 @@ body {
     float: right;
 }
 
+.glyphicon {
+    margin: 5px;
+}
+
+.lap-list-cell {
+    cursor: pointer;
+}
+
+.lap-list-header {
+    color: #ffffff;
+    padding: 5px;
+    font-size: 20px;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 h1 {
     font-size: 50px;
 }

@@ -10,16 +10,21 @@ import {LapListComponent} from "./lap-list.component";
     <div class="page-header">
         <h1><img src="/images/project_cars_logo.png"> Leaderboard</h1>
     </div>
+    
+    <div *ngIf="selectedLap">
+        <lap-editor [title]="'Enter New Lap'"></lap-editor>
+    </div>
   
-    <lap-list [(laps)]="laps"></lap-list>
+    <lap-list [laps]="laps"></lap-list>
 </div>
 `,
-    directives: [LapListComponent]
+    directives: [
+        LapListComponent
+    ]
 })
 
 export class AppComponent {
     laps = LAPS;
-    selectedLap:Lap;
 }
 
 var LAPS:Lap[] = [

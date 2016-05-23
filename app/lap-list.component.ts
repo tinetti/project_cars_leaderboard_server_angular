@@ -1,39 +1,39 @@
-import {Component, Input} from "@angular/core";
+import {Component, EventEmitter, Input, Output} from "@angular/core";
 import {Lap} from "./lap";
+import {LapEditorComponent} from "./lap-editor.component";
 
 @Component({
     selector: "lap-list",
     template: `
-<div class="panel panel-success">
-<div class="panel-heading">
-    <h3 class="panel-title">Saved Laps</h3>
-
-    <span class="create-lap glyphicon glyphicon-plus"></span>
-</div>
-<table class="table table-striped table-hover">
-    <thead>
-        <tr>
-            <th>Driver</th>
-            <th>Lap Time</th>
-            <th>Track</th>
-            <th>Car</th>
-            <th class="actions">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let lap of laps">
-            <td>{{lap.driver}}</td>
-            <td>{{lap.lapTime}}</td>
-            <td>{{lap.trackLocation}} - {{lap.trackVariation}}</td>
-            <td>{{lap.carName}} ({{lap.carClassName}})</td>
-      </tr>
-    </tbody>
-</table>
-</div>
-`
+    <div class="row">
+        <div class="col-xs-2 lap-list-header">Driver</div>
+        <div class="col-xs-3 lap-list-header">Lap Time</div>
+        <div class="col-xs-4 lap-list-header">Track</div>
+        <div class="col-xs-3 lap-list-header">Car</div>
+    </div>
+    
+    <div *ngFor="let lap of laps">
+        <lap-editor *ngIf="lap == selectedLap" [lap]="selectedLap" [title]="'Edit Lap'"></lap-editor>
+        <div *ngIf="lap != selectedLap" class="row lap-list-row">
+            <div class="col-xs-2 lap-list-cell" (click)="onLapSelected(lap)">{{lap.driver}}</div>
+            <div class="col-xs-3 lap-list-cell" (click)="onLapSelected(lap)">{{lap.lapTime}}</div>
+            <div class="col-xs-4 lap-list-cell" (click)="onLapSelected(lap)">{{lap.trackLocation}} - {{lap.trackVariation}}</div>
+            <div class="col-xs-3 lap-list-cell" (click)="onLapSelected(lap)">{{lap.carName}} ({{lap.carClassName}})</div>
+        </div>
+    </div>
+`,
+    directives: [
+        LapEditorComponent
+    ]
 })
 
 export class LapListComponent {
     @Input()
     laps:Lap[];
+
+    selectedLap:Lap;
+
+    onLapSelected(lap:Lap) {
+        this.selectedLap = lap;
+    }
 }
