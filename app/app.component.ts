@@ -1,6 +1,8 @@
 import {Component} from "@angular/core";
 import {Lap} from "./lap";
+import {LapEditorComponent} from "./lap-editor.component";
 import {LapListComponent} from "./lap-list.component";
+import {LapService} from "./lap.service";
 
 
 @Component({
@@ -11,27 +13,31 @@ import {LapListComponent} from "./lap-list.component";
         <h1><img src="/images/project_cars_logo.png"> Leaderboard</h1>
     </div>
     
-    <div *ngIf="selectedLap">
-        <lap-editor [title]="'Enter New Lap'"></lap-editor>
-    </div>
+    <!--<lap-editor [title]="'Enter New Lap'"></lap-editor>-->
   
-    <lap-list [laps]="laps"></lap-list>
+    <lap-list [laps]="laps" [title]="'Saved Laps'"></lap-list>
 </div>
 `,
     directives: [
+        LapEditorComponent,
         LapListComponent
+    ],
+    providers: [
+        LapService
     ]
 })
 
 export class AppComponent {
-    laps = LAPS;
-}
+    laps:Lap[];
 
-var LAPS:Lap[] = [
-    {"id": "11", "driver": "Johnny", "lapTime": "1:23.456", "carName": "BMW M6", "carClassName": "Road", "trackLocation": "BIR", "trackVariation": "Short"},
-    {"id": "12", "driver": "Johnny", "lapTime": "2:23.456", "carName": "BMW M6", "carClassName": "Road", "trackLocation": "BIR", "trackVariation": "Long"},
-    {"id": "13", "driver": "Johnny", "lapTime": "3:23.456", "carName": "BMW M6", "carClassName": "Road", "trackLocation": "BIR", "trackVariation": "Short"},
-    {"id": "21", "driver": "Pauly", "lapTime": "1:23.456", "carName": "BMW M6", "carClassName": "Road", "trackLocation": "BIR", "trackVariation": "Short"},
-    {"id": "22", "driver": "Pauly", "lapTime": "2:23.456", "carName": "BMW M6", "carClassName": "Road", "trackLocation": "BIR", "trackVariation": "Short"},
-    {"id": "23", "driver": "Pauly", "lapTime": "3:23.456", "carName": "BMW M6", "carClassName": "Road", "trackLocation": "BIR", "trackVariation": "Long"}
-];
+    constructor(private lapService:LapService) {
+    }
+
+    ngOnInit() {
+        this.getLaps();
+    }
+
+    getLaps() {
+        this.lapService.getLaps().then(laps => this.laps = laps);
+    }
+}
