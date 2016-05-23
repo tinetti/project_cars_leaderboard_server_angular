@@ -12,20 +12,20 @@ import {LapEditorComponent} from "./lap-editor.component";
     </div>
     
     <div class="lap-list-container">
-        <div class="row">
-            <div class="col-xs-2 lap-list-header">Driver</div>
-            <div class="col-xs-3 lap-list-header">Lap Time</div>
-            <div class="col-xs-4 lap-list-header">Track</div>
-            <div class="col-xs-3 lap-list-header">Car</div>
+        <div class="row lap-list-row lap-list-header-row">
+            <div class="col-xs-2 lap-list-header-cell">Driver</div>
+            <div class="col-xs-3 lap-list-header-cell">Lap Time</div>
+            <div class="col-xs-4 lap-list-header-cell">Track</div>
+            <div class="col-xs-3 lap-list-header-cell">Car</div>
         </div>
         
         <div *ngFor="let lap of laps">
             <lap-editor *ngIf="lap == selectedLap" [lap]="selectedLap" [title]="'Edit Lap'" (saved)="onSave()" (cancelled)="onCancel()"></lap-editor>
-            <div *ngIf="lap != selectedLap" class="row lap-list-row">
-                <div class="col-xs-2 lap-list-cell" (click)="onLapSelected(lap)">{{lap.driver}}</div>
-                <div class="col-xs-3 lap-list-cell" (click)="onLapSelected(lap)">{{lap.lapTime}}</div>
-                <div class="col-xs-4 lap-list-cell" (click)="onLapSelected(lap)">{{lap.trackLocation}} - {{lap.trackVariation}}</div>
-                <div class="col-xs-3 lap-list-cell" (click)="onLapSelected(lap)">{{lap.carName}} ({{lap.carClassName}})</div>
+            <div *ngIf="lap != selectedLap" class="row lap-list-row lap-list-detail-row">
+                <div class="col-xs-2 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.driver}}</div>
+                <div class="col-xs-3 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.lapTime}}</div>
+                <div class="col-xs-4 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.trackLocation}} - {{lap.trackVariation}}</div>
+                <div class="col-xs-3 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.carName}} ({{lap.carClassName}})</div>
             </div>
         </div>
     </div>

@@ -17,8 +17,8 @@ import {Lap} from "./lap";
         <input class="col-xs-2" type="text" name="carClassName" placeholder="Car Class" [(ngModel)]="lap.carClassName"/>
     </div>
     <div class="row">
-        <input type="submit" class="btn-success save" value="Save" (click)="onSave()"/>
-        <input type="button" class="btn-danger cancel" value="Cancel" (click)="onCancel()"/>
+        <a href="#" class="btn btn-success" (click)="onSave()">Save</a>
+        <a href="#" class="btn btn-danger" (click)="onCancel()">Cancel</a>
     </div>
 </form>
 `

@@ -3,6 +3,10 @@
 #  $ docker build -t pcars-leaderboard-ng .
 #  $ docker run -it --rm -p 3000:3000 -p 3001:3001 pcars-leaderboard-ng
 #
+#  $ docker tag pcars-leaderboard-ng tinetti/pcars-leaderboard-ng:latest
+#  $ docker login
+#  $ docker push tinetti/pcars-leaderboard-ng
+#
 FROM node:4.4
 
 RUN mkdir -p /pcars-leaderboard /home/nodejs && \
