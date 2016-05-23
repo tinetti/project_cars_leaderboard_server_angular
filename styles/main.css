@@ -1,0 +1,91 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700");
+
+body {
+    background-image: url("http://cdn1.editmysite.com/uploads/2/0/6/5/20658008/background-images/1525247577.jpg");
+}
+
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+    min-height: 100%;
+}
+
+#login-buttons {
+    display: block;
+    float: right;
+    margin-top: -40px;
+}
+
+#login-dropdown-list {
+    position: relative;
+    margin-top: -20px;
+}
+
+#login-buttons .login-close-text {
+    float: right;
+}
+
+h1 {
+    font-size: 50px;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
+    color: #ffffff;
+}
+
+h1, .h1, h2, .h2, h3, .h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.panel-heading .create-lap {
+    position: relative;
+    float: right;
+    top: -15px;
+    cursor: pointer;
+}
+
+.save-lap-panel-body {
+    padding: 0;
+}
+
+form.save-lap {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+th.actions {
+    text-align: right;
+}
+
+td.actions {
+    text-align: right;
+}
+
+.edit {
+    cursor: pointer;
+}
+
+.delete {
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    li {
+        padding: 12px 15px;
+    }
+
+    .search {
+        width: 150px;
+        clear: both;
+    }
+
+    .new-task input {
+        padding-bottom: 5px;
+    }
+}
