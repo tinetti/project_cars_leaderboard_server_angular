@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Project CARS Leaderboard",
   "scripts": {
-    "start": "tsc && concurrently \"tsc -w\" \"node server.js\""
+    "start": "tsc && concurrently \"tsc -w\" \"nodemon server.js\""
   },
   "keywords": [],
   "author": "",
@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "concurrently": "^2.0.0",
+    "nodemon": "^1.9.2",
     "typescript": "^1.8.10",
     "typings": "^0.8.1"
   },

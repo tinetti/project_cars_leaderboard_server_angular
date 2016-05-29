@@ -34,8 +34,8 @@ node_modules
 
 # Angular 2
 typings
-app/**/*.js
-app/**/*.map
+public/app/**/*.js
+public/app/**/*.map
 
 # Test output
 _test-output

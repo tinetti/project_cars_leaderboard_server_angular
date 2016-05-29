@@ -12,7 +12,7 @@ import {Lap} from "./lap";
         <input class="col-xs-2" type="text" name="driver" placeholder="Driver" [(ngModel)]="lap.driver"/>
         <input class="col-xs-2" type="text" name="lapTime" placeholder="Lap Time" autocomplete="off" [(ngModel)]="lap.lapTime"/>
         <input class="col-xs-2" type="text" name="trackLocation" placeholder="Track Location" [(ngModel)]="lap.trackLocation"/>
-        <input class="col-xs-2" type="text" name="trackVariation" placeholder="Track Variation" [(ngModel)]="lap.trackVariation"/>
+        <input class="col-xs-2" type="text" name="trackVariation" placeholder="Track Variationz" [(ngModel)]="lap.trackVariation"/>
         <input class="col-xs-2" type="text" name="carName" placeholder="Car Name" [(ngModel)]="lap.carName"/>
         <input class="col-xs-2" type="text" name="carClassName" placeholder="Car Class" [(ngModel)]="lap.carClassName"/>
     </div>

@@ -1,19 +1,19 @@
-const Path = require('path');
-const Hapi = require('hapi');
-const Inert = require('inert');
+const path = require('path');
+const hapi = require('hapi');
+const inert = require('inert');
 
-const server = new Hapi.Server({
+const server = new hapi.Server({
     connections: {
         routes: {
             files: {
-                relativeTo: Path.join(__dirname, 'public')
+                relativeTo: path.join(__dirname, 'public')
             }
         }
     }
 });
 server.connection({ port: 3000 });
 
-server.register(Inert, () => {});
+server.register(inert, () => {});
 
 server.route({
     method: 'GET',
@@ -28,11 +28,9 @@ server.route({
 });
 
 server.start((err) => {
-
     if (err) {
         throw err;
     }
 
-    console.log("path: " + Path);
-    console.log('Server running at:', server.info.uri);
+    console.log('Server running at: http://localhost:', server.info.port);
 });
