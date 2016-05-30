@@ -14,13 +14,21 @@ export class LapService {
 
     getLaps(): Observable<Lap[]> {
         return this.http.get(this.lapsUrl)
-            .map(this.extractData)
+            .map((res) => res.json().laps || {})
             .catch(this.handleError);
     }
 
-    private extractData(res: Response) {
-        let body = res.json();
-        return body.laps || {};
+    saveLap(lap: Lap): Observable<Lap> {
+        let lapUrl = `${this.lapsUrl}/${lap._id}`
+        let body = JSON.stringify(lap);
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        console.log(`saving lap (${lapUrl}): ${lap}`);
+        
+        return this.http.put(lapUrl, body, options)
+            .map((res) => res.json() || {})
+            .catch(this.handleError);
     }
 
     private handleError(error: any) {

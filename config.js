@@ -1,4 +1,7 @@
 module.exports = {
+    hapi: {
+        options: {}
+    },
     server: {
         port: process.env.PORT || 3000
     },

@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {Lap} from "./lap";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Lap } from "./lap";
+import { LapService } from "./lap.service"
 
 @Component({
     selector: "lap-editor",
@@ -35,8 +36,12 @@ export class LapEditorComponent {
 
     @Output()
     saved = new EventEmitter();
+     
+    constructor(private lapService: LapService) {
+    }
 
     onSave() {
+        this.lapService.saveLap(this.lap).subscribe((lap) => this.lap = lap);
         this.saved.emit(this.lap);
     }
 
