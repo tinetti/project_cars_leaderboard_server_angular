@@ -5,9 +5,11 @@ const MongoClient = require('mongodb').MongoClient
 
 const server = new Hapi.Server();
 
-const mongoUrl = 'mongodb://mongo.swervesoft.net:27017/pcars_leaderboard';
+const config = require('./config')
+const mongoUrl = config.mongo.url
+const serverPort = config.server.port
 
-server.connection({ port: 3000 });
+server.connection({ port: serverPort });
 
 server.register(Inert, (err) => {
     if (err) {
