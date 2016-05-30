@@ -6,4 +6,7 @@ export class Lap {
     carClassName: string;
     trackLocation: string;
     trackVariation: string;
+    lapDateTime: Date;
+    createdDateTime: Date;
+    modifiedDateTime: Date;
 }

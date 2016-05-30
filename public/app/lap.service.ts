@@ -25,10 +25,16 @@ export class LapService {
         let options = new RequestOptions({ headers: headers });
 
         console.log(`saving lap (${lapUrl}): ${lap}`);
-        
-        return this.http.put(lapUrl, body, options)
-            .map((res) => res.json() || {})
-            .catch(this.handleError);
+
+        if (lap._id) {
+            return this.http.put(lapUrl, body, options)
+                .map((res) => res.json() || {})
+                .catch(this.handleError);
+        } else {
+            return this.http.post(this.lapsUrl, body, options)
+                .map((res) => res.json() || {})
+                .catch(this.handleError);
+        }
     }
 
     private handleError(error: any) {

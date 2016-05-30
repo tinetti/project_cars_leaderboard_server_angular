@@ -34,17 +34,25 @@ server.register([Inert], config.hapi.options, (err) => {
 server.route({
     method: 'GET',
     path: '/api/laps',
-    handler: function (request, reply) {
+    handler: (request, reply) => {
         if (!lapsCollection) {
             return reply(Boom.create(503, 'Database Unavailable'));
         }
 
-        lapsCollection.find({}).toArray(function (err, laps) {
+        lapsCollection.find({}).toArray((err, laps) => {
             if (err) {
                 return reply(Boom.wrap(err));
             }
 
-            return reply({ laps: laps });
+            var sorted = laps.sort((a, b) => {
+                var dateA = Date.parse(a.lapTimestamp);
+                var dateB = Date.parse(b.lapTimestamp);
+                return dateA ?
+                    (dateB ? dateB - dateA : -1) :
+                    (dateB ? 1 : 0);
+            });
+            
+            return reply({ laps: sorted });
         });
     }
 });
@@ -52,12 +60,12 @@ server.route({
 server.route({
     method: 'GET',
     path: '/api/laps/{_id}',
-    handler: function (request, reply) {
+    handler: (request, reply) => {
         if (!lapsCollection) {
             return reply(Boom.create(503, 'Database Unavailable'));
         }
 
-        lapsCollection.find({ _id: request.params._id }).toArray(function (err, laps) {
+        lapsCollection.find({ _id: request.params._id }).toArray((err, laps) => {
             if (err) {
                 return reply(Boom.wrap(err));
             }
@@ -65,8 +73,35 @@ server.route({
             if (!laps.length) {
                 return reply(Boom.notFound('Lap not found'));
             }
-            
-            return reply(laps);
+
+            return reply(laps[0]);
+        });
+    }
+});
+
+server.route({
+    method: 'POST',
+    path: '/api/laps',
+    handler: (request, reply) => {
+        if (!lapsCollection) {
+            return reply(Boom.create(503, 'Database Unavailable'));
+        }
+
+        if (request.payload._id) {
+            return reply(Boom.create(400, '_id should not be present for insert'));
+        }
+
+        var lap = JSON.parse(JSON.stringify(request.payload));
+        lap.lapTimestamp = Date.parse(lap.lapTimestamp) || new Date();
+        lap.createdTimestamp = new Date();
+        lap.modifiedTimestamp = new Date();
+        lapsCollection.insertOne(lap, (err, result) => {
+            if (err) {
+                return reply(Boom.wrap(err));
+            }
+
+            console.log("inserted lap: " + JSON.stringify(lap));
+            return reply(lap);
         });
     }
 });
@@ -74,23 +109,32 @@ server.route({
 server.route({
     method: 'PUT',
     path: '/api/laps/{_id}',
-    handler: function (request, reply) {
+    handler: (request, reply) => {
         if (!lapsCollection) {
             return reply(Boom.create(503, 'Database Unavailable'));
         }
 
-        lapsCollection.updateOne({_id: request.params._id}, request.payload, function (err, result) {
+        var _id = request.params._id;
+        if (request.payload._id != _id) {
+            return reply(Boom.create(400, '_id in url should match payload'));
+        }
+
+        var lap = JSON.parse(JSON.stringify(request.payload));
+        lap.lapTimestamp = Date.parse(lap.lapTimestamp) || new Date();
+        lap.createdTimestamp = Date.parse(lap.createdTimestamp) || new Date();
+        lap.modifiedTimestamp = new Date();
+        lapsCollection.updateOne({ _id: _id }, lap, (err, result) => {
             if (err) {
                 return reply(Boom.wrap(err));
-            }            
+            }
 
-            console.log("saved lap: " + JSON.stringify(request.payload));
-            return reply(request.payload);
+            console.log("updated lap: " + JSON.stringify(lap));
+            return reply(lap);
         });
     }
 });
 
-MongoClient.connect(mongoUrl, function (err, db) {
+MongoClient.connect(mongoUrl, (err, db) => {
     if (err) {
         console.log("Error connecting to mongo server", mongoUrl);
         return;
