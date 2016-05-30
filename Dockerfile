@@ -9,17 +9,26 @@
 #
 FROM node:4.4
 
-RUN mkdir -p /pcars-leaderboard /home/nodejs && \
+COPY server.js package.json tsconfig.json typings.json                      /pcars-leaderboard/
+COPY typings                                                                /pcars-leaderboard/typings
+COPY public/package.json public/index.html public/systemjs.config.js        /pcars-leaderboard/public/
+COPY public/styles                                                          /pcars-leaderboard/public/styles
+COPY public/images                                                          /pcars-leaderboard/public/images
+COPY public/app/*.ts                                                        /pcars-leaderboard/public/app/
+
+WORKDIR /pcars-leaderboard/public
+RUN npm install --production
+
+WORKDIR /pcars-leaderboard
+RUN npm install --production
+RUN npm install -g typescript && tsc
+
+RUN mkdir /home/nodejs && \
     groupadd -r nodejs && \
     useradd -r -g nodejs -d /home/nodejs -s /sbin/nologin nodejs && \
     chown -R nodejs:nodejs /home/nodejs
 
-WORKDIR /pcars-leaderboard
-COPY package.json typings.json /pcars-leaderboard/
-RUN npm install --unsafe-perm=true
-
-COPY . /pcars-leaderboard
 RUN chown -R nodejs:nodejs /pcars-leaderboard
 USER nodejs
 
-CMD npm start
+CMD node server.js

@@ -9,11 +9,8 @@
     "removeComments": false,
     "noImplicitAny": false
   },
-  "exclude": [
-    "node_modules",
-    "public/node_modules",
-    "typings/main",
+  "files": [
+    "public/app/main.ts",
     "typings/main.d.ts"
   ]
 }
-

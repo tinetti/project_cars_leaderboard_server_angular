@@ -1,30 +1,58 @@
-const path = require('path');
-const hapi = require('hapi');
-const inert = require('inert');
+const Path = require('path');
+const Hapi = require('hapi');
+const Inert = require('inert');
+const MongoClient = require('mongodb').MongoClient
 
-const server = new hapi.Server({
-    connections: {
-        routes: {
-            files: {
-                relativeTo: path.join(__dirname, 'public')
-            }
-        }
-    }
-});
+const server = new Hapi.Server();
+
+const mongoUrl = 'mongodb://mongo.swervesoft.net:27017/pcars_leaderboard';
+
 server.connection({ port: 3000 });
 
-server.register(inert, () => {});
+server.register(Inert, (err) => {
+    if (err) {
+        throw err;
+    }
+    server.route({
+        method: 'GET',
+        path: '/{param*}',
+        handler: {
+            directory: {
+                path: 'public'
+            }
+        }
+    });
+});
 
 server.route({
     method: 'GET',
-    path: '/{param*}',
-    handler: {
-        directory: {
-            path: '.',
-            redirectToSlash: true,
-            index: true
+    path: '/api/laps',
+    handler: function (request, reply) {
+        if (!server.app.db) {
+            console.log("not connected to mongo");
+            reply({ laps: [] });
+            return;
         }
+        
+        var collection = server.app.db.collection("laps");
+        collection.find({}).toArray(function (err, laps) {
+            if (err) {
+                reply({ error: err });
+                return;
+            }
+            
+            reply({ laps: laps });
+        });
     }
+});
+
+MongoClient.connect(mongoUrl, function (err, db) {
+    if (err) {
+        console.log("Error connecting to mongo server", mongoUrl);
+        return;
+    }
+
+    server.app.db = db;
 });
 
 server.start((err) => {
@@ -32,5 +60,5 @@ server.start((err) => {
         throw err;
     }
 
-    console.log('Server running at: http://localhost:', server.info.port);
+    console.log(`Server running at: http://localhost:${server.info.port}`);
 });

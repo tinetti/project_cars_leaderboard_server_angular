@@ -1,9 +1,12 @@
 import {Component} from "@angular/core";
+
+// Add the RxJS Observable operators we need in this app.
+import "./rxjs-operators";
+
 import {Lap} from "./lap";
 import {LapEditorComponent} from "./lap-editor.component";
 import {LapListComponent} from "./lap-list.component";
 import {LapService} from "./lap.service";
-
 
 @Component({
     selector: 'my-app',
@@ -28,9 +31,9 @@ import {LapService} from "./lap.service";
 })
 
 export class AppComponent {
-    laps:Lap[];
+    laps: Lap[];
 
-    constructor(private lapService:LapService) {
+    constructor(private lapService: LapService) {
     }
 
     ngOnInit() {
@@ -38,6 +41,6 @@ export class AppComponent {
     }
 
     getLaps() {
-        this.lapService.getLaps().then(laps => this.laps = laps);
+        this.lapService.getLaps().subscribe(laps => this.laps = laps);
     }
 }

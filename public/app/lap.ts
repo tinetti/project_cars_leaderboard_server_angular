@@ -1,5 +1,5 @@
 export class Lap {
-    id: string;
+    _id: string;
     driver: string;
     lapTime: string;
     carName: string;
