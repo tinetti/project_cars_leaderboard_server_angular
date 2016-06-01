@@ -12,7 +12,8 @@
     "boom": "^3.2.1",
     "hapi": "^13.4.1",
     "inert": "^4.0.0",
-    "mongodb": "^2.1.20"
+    "mongodb": "^2.1.20",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "concurrently": "^2.0.0",

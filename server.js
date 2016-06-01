@@ -1,19 +1,18 @@
-const Path = require('path');
 const Hapi = require('hapi');
 const Boom = require('boom');
 const Inert = require('inert');
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb').MongoClient;
 
-const config = require('./config')
-const mongoUrl = config.mongo.url
-const serverPort = config.server.port
+const config = require('./config');
+const mongoUrl = config.mongo.url;
+const serverPort = config.server.port;
 
 const server = new Hapi.Server({});
 
-server.connection({ port: serverPort });
+server.connection({port: serverPort});
 server.log(['debug', 'error', 'database', 'read']);
 
-var db;
+
 var lapsCollection;
 
 server.register([Inert], config.hapi.options, (err) => {
@@ -51,8 +50,8 @@ server.route({
                     (dateB ? dateB - dateA : -1) :
                     (dateB ? 1 : 0);
             });
-            
-            return reply({ laps: sorted });
+
+            return reply({laps: sorted});
         });
     }
 });
@@ -65,7 +64,7 @@ server.route({
             return reply(Boom.create(503, 'Database Unavailable'));
         }
 
-        lapsCollection.find({ _id: request.params._id }).toArray((err, laps) => {
+        lapsCollection.find({_id: request.params._id}).toArray((err, laps) => {
             if (err) {
                 return reply(Boom.wrap(err));
             }
@@ -101,7 +100,7 @@ server.route({
             }
 
             console.log("inserted lap: " + JSON.stringify(lap));
-            return reply(lap);
+            return reply({result: result.result, lap: lap});
         });
     }
 });
@@ -123,15 +122,19 @@ server.route({
         lap.lapTimestamp = Date.parse(lap.lapTimestamp) || new Date();
         lap.createdTimestamp = Date.parse(lap.createdTimestamp) || new Date();
         lap.modifiedTimestamp = new Date();
-        lapsCollection.updateOne({ _id: _id }, lap, (err, result) => {
+        lapsCollection.updateOne({_id: _id}, lap, (err, result) => {
             if (err) {
                 return reply(Boom.wrap(err));
             }
 
             console.log("updated lap: " + JSON.stringify(lap));
-            return reply(lap);
+            return reply({result: result.result, lap: lap});
         });
     }
+});
+
+server.on('response', function (request) {
+    console.log(request.info.remoteAddress + ': ' + request.method.toUpperCase() + ' ' + request.url.path + ' --> ' + request.response.statusCode);
 });
 
 MongoClient.connect(mongoUrl, (err, db) => {
@@ -140,7 +143,6 @@ MongoClient.connect(mongoUrl, (err, db) => {
         return;
     }
 
-    db = db;
     lapsCollection = db.collection("laps");
 });
 

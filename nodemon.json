@@ -1,5 +1,9 @@
 {
   "verbose": true,
-  "watch": ["*.js"],
-  "ignore": ["public/*"]
+  "watch": [
+    "*.js"
+  ],
+  "ignore": [
+    "public/*"
+  ]
 }
