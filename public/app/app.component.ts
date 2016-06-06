@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, Injectable, ViewContainerRef} from "@angular/core";
 
 // Add the RxJS Observable operators we need in this app.
 import "./rxjs-operators";
@@ -29,11 +29,14 @@ import {LapService} from "./lap.service";
         LapService
     ]
 })
-
+@Injectable()
 export class AppComponent {
-    laps: Lap[];
+    laps:Lap[];
+    private viewContainerRef:ViewContainerRef;
 
-    constructor(private lapService: LapService) {
+    constructor(private lapService:LapService, viewContainerRef:ViewContainerRef) {
+        // bug workaround
+        this.viewContainerRef = viewContainerRef;
     }
 
     ngOnInit() {

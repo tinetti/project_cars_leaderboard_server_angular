@@ -13,21 +13,26 @@ import {LapEditorComponent} from "./lap-editor.component";
     
     <div class="lap-list-container">
         <div class="row lap-list-row lap-list-header-row">
-            <div class="col-xs-2 lap-list-header-cell">Driver</div>
+            <div class="col-xs-3 lap-list-header-cell">Driver</div>
             <div class="col-xs-3 lap-list-header-cell">Lap Time</div>
             <div class="col-xs-3 lap-list-header-cell">Track</div>
-            <div class="col-xs-2 lap-list-header-cell">Car</div>
-            <div class="col-xs-2 lap-list-header-cell">Date</div>
+            <div class="col-xs-3 lap-list-header-cell">Car</div>
         </div>
         
         <div *ngFor="let lap of laps">
-            <lap-editor *ngIf="lap == selectedLap" [lap]="selectedLap" [title]="'Edit Lap'" (saved)="onSave()" (cancelled)="onCancel()"></lap-editor>
+            <div *ngIf="lap == selectedLap" class="row lap-list-row lap-list-detail-row">
+                <lap-editor 
+                    [lap]="selectedLap" 
+                    [title]="'Edit Lap'" 
+                    (saved)="onSave(lap)" 
+                    (cancelled)="onCancel()" 
+                    (deleted)="onDelete(lap)"></lap-editor>
+            </div>
             <div *ngIf="lap != selectedLap" class="row lap-list-row lap-list-detail-row">
-                <div class="col-xs-2 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.driver}}</div>
+                <div class="col-xs-3 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.driver}}</div>
                 <div class="col-xs-3 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.lapTime}}</div>
-                <div class="col-xs-3 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.trackLocation}} - {{lap.trackVariation}}</div>
-                <div class="col-xs-2 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.carName}} ({{lap.carClassName}})</div>
-                <div class="col-xs-2 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.lapTimestamp}}</div>
+                <div class="col-xs-3 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.trackLocation}}</div>
+                <div class="col-xs-3 lap-list-detail-cell" (click)="onLapSelected(lap)">{{lap.carName}}</div>
             </div>
         </div>
     </div>
@@ -39,13 +44,13 @@ import {LapEditorComponent} from "./lap-editor.component";
 })
 export class LapListComponent {
     @Input()
-    title: string;
+    title:string;
 
     @Input()
-    laps: Lap[];
+    laps:Lap[];
 
-    selectedLap: Lap;
-    
+    selectedLap:Lap;
+
     onCreateLap() {
         var lap = {};
         if (this.laps.length) {
@@ -54,21 +59,33 @@ export class LapListComponent {
         var lapCopy = JSON.parse(JSON.stringify(lap));
         lapCopy._id = null;
         lapCopy.lapTime = null;
+        lapCopy.lapTimestamp = null;
+        lapCopy.createdTimestamp = null;
+        lapCopy.modifiedTimestamp = null;
         this.selectedLap = lapCopy;
         this.laps.splice(0, 0, lapCopy);
     }
 
-    onLapSelected(lap: Lap) {
+    onLapSelected(lap:Lap) {
         this.selectedLap = lap;
     }
 
-    onSave() {
+    onSave(lap:Lap) {
         this.selectedLap = null;
     }
 
     onCancel() {
         if (!this.selectedLap._id) {
             this.laps.splice(0, 1);
+        }
+        this.selectedLap = null;
+    }
+
+    onDelete(lap:Lap) {
+        for (var i = 0; i < this.laps.length; i++) {
+            if (lap._id == this.laps[i]._id) {
+                this.laps.splice(i, 1);
+            }
         }
         this.selectedLap = null;
     }

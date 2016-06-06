@@ -2,6 +2,7 @@ const Hapi = require('hapi');
 const Boom = require('boom');
 const Inert = require('inert');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectID;
 
 const config = require('./config');
 const mongoUrl = config.mongo.url;
@@ -42,6 +43,13 @@ server.route({
             if (err) {
                 return reply(Boom.wrap(err));
             }
+
+            laps.forEach(lap => {
+                console.log("lap.lapTimestamp: " + lap.lapTimestamp);
+                if (parseInt(lap.lapTimestamp)) {
+                    lap.lapTimestamp = new Date(lap.lapTimestamp);
+                }
+            });
 
             var sorted = laps.sort((a, b) => {
                 var dateA = Date.parse(a.lapTimestamp);
@@ -91,7 +99,7 @@ server.route({
         }
 
         var lap = JSON.parse(JSON.stringify(request.payload));
-        lap.lapTimestamp = Date.parse(lap.lapTimestamp) || new Date();
+        lap.lapTimestamp = new Date(lap.lapTimestamp);
         lap.createdTimestamp = new Date();
         lap.modifiedTimestamp = new Date();
         lapsCollection.insertOne(lap, (err, result) => {
@@ -113,14 +121,15 @@ server.route({
             return reply(Boom.create(503, 'Database Unavailable'));
         }
 
-        var _id = request.params._id;
+        var _id = new ObjectID(request.params._id);
         if (request.payload._id != _id) {
             return reply(Boom.create(400, '_id in url should match payload'));
         }
 
         var lap = JSON.parse(JSON.stringify(request.payload));
-        lap.lapTimestamp = Date.parse(lap.lapTimestamp) || new Date();
-        lap.createdTimestamp = Date.parse(lap.createdTimestamp) || new Date();
+        lap._id = _id;
+        lap.lapTimestamp = new Date(lap.lapTimestamp);
+        lap.createdTimestamp = new Date(lap.createdTimestamp);
         lap.modifiedTimestamp = new Date();
         lapsCollection.updateOne({_id: _id}, lap, (err, result) => {
             if (err) {
@@ -129,6 +138,26 @@ server.route({
 
             console.log("updated lap: " + JSON.stringify(lap));
             return reply({result: result.result, lap: lap});
+        });
+    }
+});
+
+server.route({
+    method: 'DELETE',
+    path: '/api/laps/{_id}',
+    handler: (request, reply) => {
+        if (!lapsCollection) {
+            return reply(Boom.create(503, 'Database Unavailable'));
+        }
+
+        var _id = new ObjectID(request.params._id);
+        lapsCollection.deleteOne({_id: _id}, (err, result) => {
+            if (err) {
+                return reply(Boom.wrap(err));
+            }
+
+            console.log(`deleted lap: ${_id}, result: ${JSON.stringify(result)}`);
+            return reply({message: `deleted lap: ${_id}`});
         });
     }
 });

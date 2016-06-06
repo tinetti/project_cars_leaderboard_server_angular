@@ -116,6 +116,10 @@ td.actions {
     cursor: pointer;
 }
 
+.btn-delete {
+    float: right;
+}
+
 @media (max-width: 600px) {
     li {
         padding: 12px 15px;
