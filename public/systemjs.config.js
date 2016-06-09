@@ -3,7 +3,7 @@
 
     // map tells the System loader where to look for things
     var map = {
-        'app': 'app', // 'dist',
+        'app': 'app',
         '@angular': 'node_modules/@angular',
         'moment': 'node_modules/moment',
         'ng2-bootstrap': 'node_modules/ng2-bootstrap',
@@ -40,6 +40,7 @@
         packages: packages
     };
 
+    //noinspection ES6ModulesDependencies
     System.config(config);
 
 })(this);

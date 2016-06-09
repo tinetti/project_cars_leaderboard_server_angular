@@ -15,7 +15,7 @@ npm start
 ### Publishing to DockerHub
 ```
 docker build -t pcars-leaderboard .
-docker tag pcars-leaderboard tinetti/pcars-leaderboard:latest
-docker login --username=tinetti
-docker push tinetti/pcars-leaderboard
+docker tag pcars-leaderboard registry.swervesoft.com/pcars-leaderboard:1.0.1
+docker tag pcars-leaderboard registry.swervesoft.com/pcars-leaderboard:latest
+docker push registry.swervesoft.com/pcars-leaderboard
 ```
