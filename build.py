@@ -11,6 +11,20 @@ import sys
 PACKAGE_JSON_FILE = 'package.json'
 
 
+def echo(message):
+    print '%s: %s' % (os.path.basename(__file__), message)
+
+
+def check_call(command):
+    echo(' '.join(command))
+    return subprocess.check_call(command)
+
+
+def check_output(command):
+    echo(' '.join(command))
+    return subprocess.check_output(command)
+
+
 def read_package_json():
     with open(PACKAGE_JSON_FILE, 'r') as file:
         return json.load(file, object_pairs_hook=collections.OrderedDict)
@@ -35,21 +49,35 @@ def write_package_json(package_json):
 
 
 def git_status():
-    return subprocess.check_output(["git", "status", "-s"])
+    return check_output(["git", "status", "-s"])
 
 
 def git_commit(message):
-    subprocess.check_call(["git", "commit", "-am", message])
+    return check_call(["git", "commit", "-am", message])
+
+
+def docker_build():
+    return check_call(["docker", "build", "-t", "pcars-leaderboard", "."])
+
+
+def docker_tag(tag):
+    return check_call(["docker", "tag", "pcars-leaderboard", tag])
+
+
+def docker_push(name):
+    return check_call(["docker", "push", name])
 
 
 def main():
     parser = argparse.ArgumentParser()
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("--version", help="set app version")
-    group.add_argument("--rev-major", action="store_true", help="rev major")
-    group.add_argument("--rev-minor", action="store_true", help="rev minor")
-    group.add_argument("--rev-patch", action="store_true", help="rev patch")
-    parser.add_argument("--no-commit", action="store_true", help="don't commit changes to git")
+    version_group = parser.add_mutually_exclusive_group()
+    version_group.add_argument("--version", help="set app version")
+    version_group.add_argument("--rev-major", action="store_true", help="rev major")
+    version_group.add_argument("--rev-minor", action="store_true", help="rev minor")
+    version_group.add_argument("--rev-patch", action="store_true", help="rev patch")
+    git_group = parser.add_mutually_exclusive_group()
+    git_group.add_argument("--no-commit", action="store_true", help="don't commit changes to git")
+    git_group.add_argument("--no-push", action="store_true", help="don't push changes to git remote")
     args = parser.parse_args()
 
     package_json = read_package_json()
@@ -64,16 +92,22 @@ def main():
     if not args.no_commit:
         changes = git_status()
         if changes:
-            print os.path.basename(__file__) + ": error: please commit your changes:\n" + changes
+            echo("error: please commit your changes:\n" + changes)
             sys.exit(1)
 
     if current_version != version:
-        print "writing version to package.json: " + version
+        echo("writing version to package.json: " + version)
         package_json['version'] = version
         write_package_json(package_json)
 
-    print "committing"
-    git_commit("revved version to " + version)
+    if not args.no_commit:
+        git_commit("revved version to " + version)
+
+    docker_build()
+    registry_name = "registry.swervesoft.com/pcars-leaderboard"
+    docker_tag(registry_name + ":" + version)
+    docker_tag(registry_name + ":latest")
+    docker_push(registry_name)
 
 
 if __name__ == "__main__":
