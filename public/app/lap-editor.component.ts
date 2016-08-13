@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core";
-import {BS_VIEW_PROVIDERS, MODAL_DIRECTVES} from 'ng2-bootstrap';
+import {BS_VIEW_PROVIDERS, MODAL_DIRECTIVES} from 'ng2-bootstrap';
 import {Lap} from "./lap";
 import {LapService} from "./lap.service"
 
@@ -50,7 +50,7 @@ import {LapService} from "./lap.service"
 -->
 `,
     directives: [
-        MODAL_DIRECTVES
+        MODAL_DIRECTIVES
     ],
     viewProviders: [
         BS_VIEW_PROVIDERS

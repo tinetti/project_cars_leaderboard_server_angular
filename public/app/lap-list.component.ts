@@ -59,7 +59,7 @@ export class LapListComponent {
         var lapCopy = JSON.parse(JSON.stringify(lap));
         lapCopy._id = null;
         lapCopy.lapTime = null;
-        lapCopy.lapTimestamp = null;
+        lapCopy.lapTimestamp = JSON.parse(JSON.stringify(new Date()));
         lapCopy.createdTimestamp = null;
         lapCopy.modifiedTimestamp = null;
         this.selectedLap = lapCopy;
